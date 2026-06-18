@@ -4,14 +4,17 @@ This guide validates the feature end-to-end once implementation tasks are comple
 
 ## Prerequisites
 
-- Python 3.11+
-- Project dependencies installed
+- macOS standard setup:
+  `brew install uv && uv sync --extra test`
+- Python 3.11+ if using an alternate virtualenv workflow
 - An output directory that can be safely overwritten during testing
+
+Run installed commands as `uv run pink-noise ...` when using the standard setup.
 
 ## 1. Generate Consumer Speaker Calibration Material
 
 ```bash
-pink-noise generate \
+uv run pink-noise generate \
   --profile consumer-speaker \
   --layout 5.1 \
   --output out/5.1-consumer \
@@ -56,7 +59,7 @@ Expected outcomes:
 ## 3. Generate Direct LFE Check Material
 
 ```bash
-pink-noise generate \
+uv run pink-noise generate \
   --profile subwoofer-lfe-check \
   --layout 5.1 \
   --output out/5.1-lfe \
@@ -73,7 +76,7 @@ Expected outcomes:
 ## 4. Generate Bass-Managed Sub-System Material
 
 ```bash
-pink-noise generate \
+uv run pink-noise generate \
   --profile subwoofer-bass-managed \
   --layout 5.1 \
   --output out/5.1-bass-managed \
@@ -89,7 +92,7 @@ Expected outcomes:
 ## 5. Generate Full-Band Analysis Material
 
 ```bash
-pink-noise generate \
+uv run pink-noise generate \
   --profile full-band-analysis \
   --layout 2.0 \
   --noise-mode periodic \

@@ -5,19 +5,42 @@ Local CLI for generating calibration-grade pink-noise WAV reference tracks.
 ## Requirements
 
 - Python 3.11+
-- NumPy is installed automatically from package metadata
+- `uv` for the standard macOS/development workflow
 
 ## Install
 
+On macOS, use `uv` as the standard setup path. It creates an isolated environment
+from the project metadata and lockfile, and avoids relying on the older system
+Python that ships with macOS.
+
 ```bash
-python -m pip install .
+brew install uv
+uv sync --extra test
+uv run pink-noise --help
 ```
 
-For development:
+Run commands through `uv run`:
+
+```bash
+uv run pink-noise generate --profile consumer-speaker --layout 5.1 --output out/5.1-consumer --overwrite
+```
+
+For development and validation:
 
 ```bash
 uv run --extra test pytest
 uv run --extra test python -m compileall -q src tests
+```
+
+Alternative virtualenv install:
+
+```bash
+brew install python@3.13
+python3.13 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[test]"
+pink-noise --help
 ```
 
 ## Examples
