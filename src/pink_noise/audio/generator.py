@@ -7,6 +7,8 @@ import numpy as np
 
 
 PERIODIC_SECONDS = 4.0
+MIN_DURATION_SECONDS = 1.0
+MAX_DURATION_SECONDS = 3600.0
 
 
 def seed_to_int(seed: int | str | None) -> int:
@@ -41,8 +43,8 @@ def generate_pink_noise(
     seed: int | str | None = None,
     mode: str = "random",
 ) -> np.ndarray:
-    if duration_seconds <= 0:
-        raise ValueError("duration_seconds must be positive")
+    if duration_seconds < MIN_DURATION_SECONDS or duration_seconds > MAX_DURATION_SECONDS:
+        raise ValueError("duration_seconds must be between 1 and 3600 seconds")
     if mode not in {"random", "periodic"}:
         raise ValueError("noise mode must be random or periodic")
     if mode == "periodic" and not math.isclose(duration_seconds % PERIODIC_SECONDS, 0.0, abs_tol=1e-9):

@@ -20,7 +20,9 @@ pink-noise generate \
 
 Expected outcomes:
 
-- Six WAV files are generated for the 5.1 layout.
+- Five WAV files are generated for the 5.1 consumer speaker layout: left, right,
+  center, left surround, and right surround. LFE material is generated with the
+  subwoofer profiles.
 - Non-subwoofer tracks use 500 Hz-2 kHz pink noise.
 - Tracks use -30 dBFS RMS per active channel.
 - Exactly one channel is active in each channel-isolated file.
@@ -155,3 +157,12 @@ Expected outcome:
 
 - The command exits non-zero.
 - The error explains that periodic noise duration must be a multiple of 4 seconds.
+
+## 11. Confirm Supported Duration Bounds
+
+Run a request with `--duration 0.5` or `--duration 3601`.
+
+Expected outcome:
+
+- The command exits non-zero.
+- The error explains that duration must be between 1 and 3600 seconds.

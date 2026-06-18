@@ -44,7 +44,12 @@
           "crest_factor_db",
           "band_hz",
           "pink_slope_db_per_octave",
+          "bandwidth_leakage_db",
+          "bandwidth_status",
           "silent_channel_max_dbfs",
+          "active_channel_count",
+          "channel_count",
+          "duration_seconds",
           "status"
         ],
         "properties": {
@@ -68,7 +73,17 @@
             "maxItems": 2
           },
           "pink_slope_db_per_octave": { "type": "number" },
+          "bandwidth_leakage_db": { "type": "number" },
+          "bandwidth_status": { "type": "string", "enum": ["pass", "fail"] },
           "silent_channel_max_dbfs": { "type": "number" },
+          "silent_channel_threshold_dbfs": { "type": "number" },
+          "channel_rms_dbfs": {
+            "type": "array",
+            "items": { "type": "number" }
+          },
+          "active_channel_count": { "type": "integer", "const": 1 },
+          "channel_count": { "type": "integer", "minimum": 1 },
+          "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
           "status": { "type": "string", "enum": ["pass", "fail"] },
           "routing_intent": { "type": "string" },
           "channel_mask": { "type": "integer", "minimum": 0 },

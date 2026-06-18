@@ -89,6 +89,7 @@ def load_custom_layout(path: Path) -> SpeakerLayout:
         raise ValidationError("custom layout requires a non-empty ordered channels array")
     channels = []
     mask = 0
+    seen_names: set[str] = set()
     for order, raw in enumerate(raw_channels):
         channel_id = str(raw.get("id", "")).lower()
         label = str(raw.get("label", channel_id)).strip()
@@ -98,6 +99,13 @@ def load_custom_layout(path: Path) -> SpeakerLayout:
         if role not in {"main", "surround", "height", "lfe", "subwoofer", "custom"}:
             raise ValidationError(f"custom layout channel '{channel_id}' has invalid role")
         aliases = tuple(str(alias).lower() for alias in raw.get("aliases", []))
+        names = (channel_id, *aliases)
+        if any(not name for name in names):
+            raise ValidationError("custom layout aliases must be non-empty")
+        collision = seen_names.intersection(names)
+        if collision:
+            raise ValidationError(f"custom layout channel or alias '{sorted(collision)[0]}' is ambiguous")
+        seen_names.update(names)
         bit = WAVE_BITS.get(channel_id)
         if policy == "speaker_positions" and bit is None:
             raise ValidationError(f"custom layout channel '{channel_id}' cannot be mapped to a WAVE speaker bit")

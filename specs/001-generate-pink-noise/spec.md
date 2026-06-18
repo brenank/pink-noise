@@ -41,7 +41,8 @@ target channel, and labels the intended 75 dB C-weighted Slow measurement method
 
 1. **Given** a 5.1 layout selection, **When** the calibrator generates consumer
    level-calibration material, **Then** the output contains separate lossless tracks
-   for left, center, right, left surround, right surround, and LFE/subwoofer.
+   for left, center, right, left surround, and right surround. LFE/subwoofer
+   material is generated through the separate subwoofer profiles.
 2. **Given** a generated center-channel calibration track, **When** the track is
    inspected, **Then** 500 Hz-2 kHz pink noise is present only in the center channel
    and every other channel is digital silence.

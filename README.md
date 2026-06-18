@@ -2,6 +2,11 @@
 
 Local CLI for generating calibration-grade pink-noise WAV reference tracks.
 
+## Requirements
+
+- Python 3.11+
+- NumPy is installed automatically from package metadata
+
 ## Install
 
 ```bash
@@ -12,6 +17,7 @@ For development:
 
 ```bash
 uv run --extra test pytest
+uv run --extra test python -m compileall -q src tests
 ```
 
 ## Examples
@@ -33,6 +39,47 @@ Generate periodic full-band analysis material:
 ```bash
 pink-noise generate --profile full-band-analysis --layout 2.0 --noise-mode periodic --duration 60 --output out/2.0-analysis --overwrite
 ```
+
+Generate with a custom direct-output layout:
+
+```bash
+pink-noise generate --profile consumer-speaker --layout custom-layout.json --output out/custom --overwrite
+```
+
+Custom layout files are JSON:
+
+```json
+{
+  "kind": "pink-noise.custom-layout",
+  "schema_version": "1.0",
+  "id": "front-stage",
+  "display_name": "Front Stage",
+  "channel_mask_policy": "directout",
+  "channels": [
+    { "id": "left", "label": "Left", "role": "main", "aliases": ["l"] },
+    { "id": "center", "label": "Center", "role": "main", "aliases": ["c"] },
+    { "id": "right", "label": "Right", "role": "main", "aliases": ["r"] }
+  ]
+}
+```
+
+## CLI Options
+
+```text
+pink-noise generate --profile <profile> --layout <layout> --output <directory> [options]
+```
+
+- `--profile`: `consumer-speaker`, `subwoofer-lfe-check`, `subwoofer-bass-managed`,
+  `full-band-analysis`, or `pro-reference`.
+- `--layout`: built-in layout ID (`2.0`, `2.1`, `3.1`, `5.1`, `7.1`, `5.1.2`,
+  `5.1.4`, `7.1.2`, `7.1.4`) or a custom layout JSON path.
+- `--channels`: comma-separated channel IDs. Defaults to all compatible channels.
+- `--duration`: custom duration from 1 to 3600 seconds. Defaults to 60 seconds.
+- `--noise-mode`: `random` or `periodic`. Periodic mode requires a duration that
+  is a multiple of 4 seconds.
+- `--seed`: repeatability value.
+- `--overwrite`: allow replacing existing generated files.
+- `--summary-name` / `--validation-name`: custom report filenames.
 
 ## Safety
 

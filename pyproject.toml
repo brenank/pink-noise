@@ -23,3 +23,8 @@ packages = ["src/pink_noise"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 filterwarnings = ["error"]
+
+[tool.pink_noise.quality]
+tests = "uv run --extra test pytest"
+python_lint_equivalent = "uv run --extra test python -m compileall -q src tests"
+markdown_review = "Review README.md and specs/001-generate-pink-noise/*.md for generated artifact guidance, quickstart coverage, and checklist status."

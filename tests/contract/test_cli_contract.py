@@ -27,6 +27,12 @@ def test_cli_nonzero_error_behavior(tmp_path, capsys):
     assert "low-frequency" in capsys.readouterr().err
 
 
+def test_cli_rejects_duration_outside_supported_bounds(tmp_path, capsys):
+    code = main(["generate", "--profile", "consumer-speaker", "--layout", "5.1", "--output", str(tmp_path), "--duration", "0.5", "--overwrite"])
+    assert code != 0
+    assert "between 1 and 3600 seconds" in capsys.readouterr().err
+
+
 def test_python_module_delegates_to_cli(tmp_path):
     result = subprocess.run(
         [

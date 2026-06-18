@@ -22,3 +22,10 @@ def test_periodic_noise_uses_four_second_period_and_tiles_seamlessly():
 def test_periodic_noise_rejects_non_period_multiple_duration():
     with pytest.raises(ValueError, match="multiple of 4"):
         generate_pink_noise(5, 48000, (20, 20000), -30, 123, "periodic")
+
+
+def test_generator_rejects_duration_outside_supported_bounds():
+    with pytest.raises(ValueError, match="between 1 and 3600"):
+        generate_pink_noise(0.5, 48000, (500, 2000), -30, 123)
+    with pytest.raises(ValueError, match="between 1 and 3600"):
+        generate_pink_noise(3601, 48000, (500, 2000), -30, 123)

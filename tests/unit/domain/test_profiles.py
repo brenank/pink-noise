@@ -8,6 +8,9 @@ def test_profile_defaults_and_warnings():
     consumer = get_profile("consumer-speaker")
     assert consumer.default_band_hz == (500.0, 2000.0)
     assert consumer.default_rms_dbfs == -30.0
+    assert consumer.default_duration_seconds == 60.0
+    assert consumer.min_duration_seconds == 1.0
+    assert consumer.max_duration_seconds == 3600.0
     assert "75 dB" in consumer.measurement_guidance
     assert get_profile("subwoofer-lfe-check").default_band_hz == (30.0, 80.0)
     assert get_profile("subwoofer-bass-managed").default_band_hz == (30.0, 80.0)

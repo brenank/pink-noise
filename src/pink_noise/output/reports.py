@@ -23,6 +23,7 @@ def render_summary(
         f"- Routing intent: {profile.purpose}",
         f"- RMS: {profile.default_rms_dbfs:g} dBFS",
         f"- Band: {profile.default_band_hz[0]:g}-{profile.default_band_hz[1]:g} Hz",
+        f"- Duration: {request.duration_seconds or profile.default_duration_seconds:g} seconds",
         f"- Noise mode: {request.noise_mode or profile.noise_mode}",
         f"- Seed: {request.seed if request.seed is not None else 0}",
         f"- Status: {status}",
@@ -33,14 +34,30 @@ def render_summary(
         "## Measurement Guidance",
         profile.measurement_guidance,
         "",
-        "For normal consumer speaker trim, use 75 dB SPL, C-weighted, Slow at the main listening position with the AVR at reference 0 dB master volume after safe routing checks.",
-        "",
-        "## Tracks",
     ]
+    if profile.purpose == "consumer_speaker":
+        lines.extend(
+            [
+                "For normal consumer speaker trim, use 75 dB SPL, C-weighted, Slow at the main listening position with the AVR at reference 0 dB master volume after safe routing checks.",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "## Channel Mapping",
+            *[f"- ch{channel.order}: {channel.id} ({channel.label}, {channel.role})" for channel in layout.channels],
+            "",
+            "## Tracks",
+        ]
+    )
     for track in tracks:
         lines.append(
-            f"- {track['target_channel_id']}: {track['path']} | RMS {track['rms_dbfs']:.2f} dBFS | "
-            f"Band {track['band_hz'][0]:g}-{track['band_hz'][1]:g} Hz | Validation {track['status']}"
+            f"- {track['target_channel_id']}: {track['path']} | active ch{track.get('active_channel_index')} | "
+            f"silent {track.get('silent_channel_indices', [])} | RMS {track['rms_dbfs']:.2f} dBFS | "
+            f"Peak {track.get('peak_dbfs', 0):.2f} dBFS | Crest {track.get('crest_factor_db', 0):.2f} dB | "
+            f"Band {track['band_hz'][0]:g}-{track['band_hz'][1]:g} Hz | "
+            f"Duration {track.get('duration_seconds', request.duration_seconds or profile.default_duration_seconds):g}s | "
+            f"Noise {track.get('noise_mode', request.noise_mode or profile.noise_mode)} | Validation {track['status']}"
         )
     if profile.warnings:
         lines.extend(["", "## Warnings", *[f"- {warning}" for warning in profile.warnings]])

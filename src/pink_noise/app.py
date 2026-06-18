@@ -85,12 +85,12 @@ def generate(request: GenerationRequest) -> GenerationResult:
             raise ValidationError(f"generated track failed validation for channel '{channel.id}': {validation['failures']}")
 
     validation_data = render_validation_data(request, profile, layout, track_results, str(summary_path), str(validation_path), str(guide_path))
+    validation_data["generated_at"] = datetime.now(timezone.utc).isoformat()
     summary = render_summary(request, profile, layout, track_results, str(summary_path), str(validation_path), str(guide_path))
     guide = render_guide(profile)
     summary_path.write_text(summary, encoding="utf-8")
     validation_path.write_text(json.dumps(validation_data, indent=2), encoding="utf-8")
     guide_path.write_text(guide, encoding="utf-8")
-    validation_data["generated_at"] = datetime.now(timezone.utc).isoformat()
     return GenerationResult(wav_paths, summary_path, validation_path, guide_path, validation_data)
 
 

@@ -27,11 +27,18 @@ def test_subwoofer_generation_rules_and_periodic_metadata(tmp_path):
     data = json.loads(analysis.validation_path.read_text())
     assert data["tracks"][0]["noise_mode"] == "periodic"
     assert data["tracks"][0]["periodic_period_seconds"] == 4.0
+    assert data["generated_at"] == analysis.validation_data["generated_at"]
 
 
 def test_profile_channel_mismatch_rejected(tmp_path):
     with pytest.raises(ValidationError, match="low-frequency"):
         generate(GenerationRequest("consumer-speaker", "5.1", tmp_path, target_channels=("lfe",), duration_seconds=1, overwrite=True))
+
+
+def test_consumer_default_excludes_lfe_because_subwoofer_profiles_own_lfe(tmp_path):
+    result = generate(GenerationRequest("consumer-speaker", "5.1", tmp_path, duration_seconds=1, overwrite=True))
+    assert len(result.track_paths) == 5
+    assert all("__ch3-lfe__" not in path.name for path in result.track_paths)
 
 
 def test_filename_convention_under_120_characters():

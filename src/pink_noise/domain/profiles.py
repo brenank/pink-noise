@@ -5,7 +5,7 @@ from .models import CalibrationProfile, SpeakerChannel, ValidationError
 
 DEFAULT_THRESHOLDS = {
     "rms_tolerance_db": 0.1,
-    "slope_tolerance_db_per_octave": 0.75,
+    "slope_tolerance_db_per_octave": 0.5,
     "silent_channel_max_dbfs": -120.0,
 }
 

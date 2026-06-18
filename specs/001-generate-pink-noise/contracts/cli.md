@@ -21,7 +21,8 @@ pink-noise generate --profile <profile> --layout <layout> --output <directory> [
 
 - `--channels <list>`: Comma-separated channel IDs. Defaults to all compatible
   channels for the selected profile.
-- `--duration <seconds>`: Custom duration. Defaults to 60 seconds.
+- `--duration <seconds>`: Custom duration from 1 to 3600 seconds. Defaults to 60
+  seconds.
 - `--noise-mode <random|periodic>`: Noise mode. Defaults to the profile default.
 - `--seed <value>`: Repeatability value.
 - `--overwrite`: Permit replacing existing generated files.

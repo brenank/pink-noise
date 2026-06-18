@@ -72,6 +72,8 @@ class CalibrationProfile:
     default_rms_dbfs: float
     default_band_hz: tuple[float, float]
     default_duration_seconds: float = 60.0
+    min_duration_seconds: float = 1.0
+    max_duration_seconds: float = 3600.0
     noise_mode: NoiseMode = "random"
     allowed_noise_modes: tuple[NoiseMode, ...] = ("random",)
     measurement_guidance: str = ""
@@ -90,7 +92,7 @@ class NoiseSpecification:
     seed: int | str | None = None
     slope_target_db_per_octave: float = -3.0
     rms_tolerance_db: float = 0.1
-    slope_tolerance_db_per_octave: float = 0.75
+    slope_tolerance_db_per_octave: float = 0.5
     silent_channel_max_dbfs: float = -120.0
 
 

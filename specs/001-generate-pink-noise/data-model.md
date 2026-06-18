@@ -12,6 +12,8 @@ Represents a named generation use case.
 - `default_rms_dbfs`: Target RMS level per active channel.
 - `default_band_hz`: Lower and upper band limit.
 - `default_duration_seconds`: Defaults to 60.
+- `min_duration_seconds`: 1.
+- `max_duration_seconds`: 3600.
 - `noise_mode`: `random`, `periodic`, or user-selectable.
 - `measurement_guidance`: Human-readable calibration instructions.
 - `warnings`: Profile-specific misuse warnings.
@@ -87,6 +89,7 @@ Defines signal requirements for a generated track.
 
 **Validation Rules**
 - Output must not clip.
+- Duration must be from 1 to 3600 seconds inclusive.
 - RMS must be within tolerance.
 - Pink-noise slope must be within tolerance.
 - Inactive channels must remain below the silence threshold.

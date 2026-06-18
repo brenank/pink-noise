@@ -1,4 +1,9 @@
-from pink_noise.domain.layouts import BUILT_IN_LAYOUTS
+import json
+
+import pytest
+
+from pink_noise.domain.layouts import BUILT_IN_LAYOUTS, load_custom_layout
+from pink_noise.domain.models import ValidationError
 
 
 def test_builtin_layout_channel_order_and_masks():
@@ -17,3 +22,24 @@ def test_builtin_layout_channel_order_and_masks():
         layout = BUILT_IN_LAYOUTS[layout_id]
         assert [channel.id for channel in layout.channels] == channels
         assert layout.channel_mask == mask
+
+
+def test_custom_layout_rejects_ambiguous_aliases(tmp_path):
+    path = tmp_path / "layout.json"
+    path.write_text(
+        json.dumps(
+            {
+                "kind": "pink-noise.custom-layout",
+                "schema_version": "1.0",
+                "id": "bad",
+                "display_name": "Bad",
+                "channel_mask_policy": "directout",
+                "channels": [
+                    {"id": "left", "label": "Left", "role": "main", "aliases": ["l"]},
+                    {"id": "right", "label": "Right", "role": "main", "aliases": ["l"]},
+                ],
+            }
+        )
+    )
+    with pytest.raises(ValidationError, match="ambiguous"):
+        load_custom_layout(path)
