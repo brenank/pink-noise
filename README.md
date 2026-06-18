@@ -6,6 +6,8 @@ Local CLI for generating calibration-grade pink-noise WAV reference tracks.
 
 - Python 3.11+
 - `uv` for the standard macOS/development workflow
+- Optional: `ffmpeg` on `PATH` when using companion playback files for media
+  browsers that hide audio-only files
 
 ## Install
 
@@ -69,6 +71,16 @@ Generate with a custom direct-output layout:
 pink-noise generate --profile consumer-speaker --layout custom-layout.json --output out/custom --overwrite
 ```
 
+Generate optional companion playback files:
+
+```bash
+pink-noise generate --profile consumer-speaker --layout 5.1 --channels center --companion-playback video-container --output out/5.1-companion --overwrite
+```
+
+Companion playback files are compatibility copies for media browsers that hide
+audio-only files. The primary validated WAV files remain the calibration reference;
+the companion files add placeholder video and lossless audio derived from those WAVs.
+
 Custom layout files are JSON:
 
 ```json
@@ -103,6 +115,7 @@ pink-noise generate --profile <profile> --layout <layout> --output <directory> [
 - `--seed`: repeatability value.
 - `--overwrite`: allow replacing existing generated files.
 - `--summary-name` / `--validation-name`: custom report filenames.
+- `--companion-playback`: `none` or `video-container`. Defaults to `none`.
 
 ## Safety
 
@@ -117,6 +130,7 @@ defaults.
 Each successful run writes:
 
 - One 48 kHz, 24-bit PCM WAVE_FORMAT_EXTENSIBLE WAV per target channel.
+- Optional companion video-container playback files when requested.
 - `SUMMARY.md` with profile, layout, channel, validation, and guide links.
 - `validation-data.json` with machine-readable measurements and WAV metadata.
 - `CALIBRATION-GUIDE.md` with beginner-facing calibration instructions.

@@ -109,12 +109,17 @@ Captures a user request to generate reference material.
 - `overwrite`: Explicit overwrite permission.
 - `seed`: Optional repeatability override.
 - `custom_layout`: Optional custom `SpeakerLayout`.
+- `companion_playback`: Optional companion playback export mode. Defaults to
+  `none`; `video-container` requests one playback-compatibility copy per selected
+  reference track.
 
 **Validation Rules**
 - Output directory must be writable.
 - Existing files are not overwritten unless `overwrite` is true.
 - Requested profile must be compatible with each target channel or produce a clear
   warning/rejection.
+- Companion playback export requires all source reference tracks to pass validation
+  first.
 
 ## ReferenceTrack
 
@@ -139,6 +144,28 @@ Represents one generated WAV file.
   `{profile}__{layout}__ch{index}-{channel}__{band}hz__{rms}dbfs__{mode}.wav`
   and stay under 120 characters.
 
+## CompanionPlaybackFile
+
+Represents an optional media-player-compatible copy of a validated reference track.
+
+**Fields**
+- `path`: Output file path.
+- `source_reference_track_path`: Source `ReferenceTrack` path.
+- `purpose`: `media_browser_compatibility`.
+- `container`: Video-container format used for browsing compatibility.
+- `placeholder_video`: Boolean indicating that video content is non-calibration
+  placeholder media.
+- `audio_encoding`: Lossless audio encoding used inside the container.
+- `status`: `created` or `failed`.
+- `error`: Failure message when creation fails.
+
+**Validation Rules**
+- Must be generated only from a `ReferenceTrack` whose `validation_result` is pass.
+- Must preserve the selected reference track's duration and channel count.
+- Must use lossless audio and must not be described as a separate calibration
+  signal.
+- File name must identify the source track and companion playback purpose.
+
 ## GenerationSummary
 
 Human-readable report for calibration sessions.
@@ -149,11 +176,14 @@ Human-readable report for calibration sessions.
 - `files`: List of generated `ReferenceTrack` entries.
 - `measurement_method`: Intended SPL and meter guidance.
 - `calibration_guide_path`: Link to the standalone beginner guide.
+- `companion_playback_files`: Optional list of `CompanionPlaybackFile` entries.
 - `warnings`: Playback-chain and calibration warnings.
 - `validation_overview`: Pass/fail summary.
 
 **Validation Rules**
 - Summary must link to `CALIBRATION-GUIDE.md` for every successful output set.
+- Summary must label companion playback files as compatibility copies and identify
+  their source reference tracks.
 
 ## ValidationData
 
@@ -163,6 +193,8 @@ Machine-readable audit record.
 - `schema_version`: Contract version.
 - `request`: Full request data.
 - `tracks`: Per-track measurements and validation outcomes.
+- `companion_playback_files`: Optional list of companion file paths, source tracks,
+  audio encoding, container, and compatibility purpose.
 - `routing_intent`, `channel_mask`, WAV format metadata, validation thresholds,
   and noise-mode details are included for auditability.
 - `overall_status`: `pass` or `fail`.
@@ -205,9 +237,12 @@ GenerationRequest
   -> generated signal arrays
   -> written ReferenceTrack files
   -> post-write validation
+  -> optional CompanionPlaybackFile export
   -> GenerationSummary + ValidationData + CalibrationGuide
   -> ready outputs
 ```
 
 Invalid input, unsafe clipping, failed tolerance checks, or overwrite conflicts
-transition to an error state and must not be reported as ready outputs.
+transition to an error state and must not be reported as ready outputs. Requested
+companion playback export failures also transition to an error state, but only
+after the primary reference tracks have been generated and validated.

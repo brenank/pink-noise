@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pink_noise.domain.models import CalibrationProfile, GenerationRequest, SpeakerLayout
+from pink_noise.domain.models import CalibrationProfile, CompanionPlaybackFile, GenerationRequest, SpeakerLayout
 
 
 def render_summary(
@@ -13,7 +13,9 @@ def render_summary(
     summary_path: str,
     validation_path: str,
     guide_path: str,
+    companion_files: list[CompanionPlaybackFile] | None = None,
 ) -> str:
+    companion_files = companion_files or []
     status = "pass" if all(track["status"] == "pass" for track in tracks) else "fail"
     lines = [
         "# Pink Noise Generation Summary",
@@ -59,6 +61,14 @@ def render_summary(
             f"Duration {track.get('duration_seconds', request.duration_seconds or profile.default_duration_seconds):g}s | "
             f"Noise {track.get('noise_mode', request.noise_mode or profile.noise_mode)} | Validation {track['status']}"
         )
+    if companion_files:
+        lines.extend(["", "## Companion Playback Files"])
+        for companion in companion_files:
+            lines.append(
+                f"- {companion.path}: playback-compatibility copy of {companion.source_reference_track_path} | "
+                f"container {companion.container} | lossless audio {companion.audio_encoding} | "
+                f"purpose {companion.purpose}"
+            )
     if profile.warnings:
         lines.extend(["", "## Warnings", *[f"- {warning}" for warning in profile.warnings]])
     return "\n".join(lines) + "\n"
@@ -72,7 +82,10 @@ def render_validation_data(
     summary_path: str,
     validation_path: str,
     guide_path: str,
+    companion_files: list[CompanionPlaybackFile] | None = None,
 ) -> dict[str, Any]:
+    companion_files = companion_files or []
+    companion_dicts = [_companion_to_dict(companion) for companion in companion_files]
     return {
         "schema_version": "1.0",
         "request": {
@@ -83,17 +96,35 @@ def render_validation_data(
             "bit_depth": 24,
             "noise_mode": request.noise_mode or profile.noise_mode,
             "seed": request.seed,
+            "companion_playback": request.companion_playback,
             "routing_intent": profile.purpose,
             "channel_mask": layout.channel_mask,
             "channel_mask_policy": layout.channel_mask_policy,
             "validation_thresholds": profile.validation_thresholds,
         },
         "tracks": tracks,
+        "companion_playback_files": companion_dicts,
         "overall_status": "pass" if all(track["status"] == "pass" for track in tracks) else "fail",
         "artifacts": {
             "summary_path": summary_path,
             "validation_data_path": validation_path,
             "calibration_guide_path": guide_path,
+            "companion_playback_paths": [str(companion.path) for companion in companion_files],
         },
         "errors": [],
     }
+
+
+def _companion_to_dict(companion: CompanionPlaybackFile) -> dict[str, Any]:
+    data: dict[str, Any] = {
+        "path": str(companion.path),
+        "source_reference_track_path": str(companion.source_reference_track_path),
+        "purpose": companion.purpose,
+        "container": companion.container,
+        "placeholder_video": companion.placeholder_video,
+        "audio_encoding": companion.audio_encoding,
+        "status": companion.status,
+    }
+    if companion.error:
+        data["error"] = companion.error
+    return data

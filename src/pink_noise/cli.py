@@ -22,6 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
     generate_parser.add_argument("--overwrite", action="store_true")
     generate_parser.add_argument("--summary-name", default="SUMMARY.md")
     generate_parser.add_argument("--validation-name", default="validation-data.json")
+    generate_parser.add_argument("--companion-playback", choices=["none", "video-container"], default="none")
     return parser
 
 
@@ -41,9 +42,11 @@ def main(argv: list[str] | None = None) -> int:
                 noise_mode=args.noise_mode,
                 summary_name=args.summary_name,
                 validation_name=args.validation_name,
+                companion_playback=args.companion_playback,
             )
             result = generate(request)
             print(f"Generated {len(result.track_paths)} reference tracks")
+            print(f"Companion playback files: {len(result.companion_paths)}")
             print(f"Summary: {result.summary_path}")
             print(f"Validation: {result.validation_path}")
             print(f"Calibration guide: {result.guide_path}")

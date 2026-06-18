@@ -11,6 +11,7 @@ class ValidationError(ValueError):
 
 ChannelRole = Literal["main", "surround", "height", "lfe", "subwoofer", "custom"]
 NoiseMode = Literal["random", "periodic"]
+CompanionPlaybackMode = Literal["none", "video-container"]
 ProfilePurpose = Literal[
     "consumer_speaker",
     "subwoofer_lfe_check",
@@ -109,6 +110,11 @@ class GenerationRequest:
     custom_layout: SpeakerLayout | None = None
     summary_name: str = "SUMMARY.md"
     validation_name: str = "validation-data.json"
+    companion_playback: CompanionPlaybackMode = "none"
+
+    def __post_init__(self) -> None:
+        if self.companion_playback not in {"none", "video-container"}:
+            raise ValidationError("companion_playback must be 'none' or 'video-container'")
 
 
 @dataclass
@@ -125,6 +131,18 @@ class ReferenceTrack:
 
 
 @dataclass
+class CompanionPlaybackFile:
+    path: Path
+    source_reference_track_path: Path
+    purpose: Literal["media_browser_compatibility"]
+    container: str
+    placeholder_video: bool
+    audio_encoding: str
+    status: Literal["created", "failed"]
+    error: str | None = None
+
+
+@dataclass
 class GenerationSummary:
     generated_at: str
     request: GenerationRequest
@@ -133,6 +151,7 @@ class GenerationSummary:
     calibration_guide_path: Path
     warnings: list[str]
     validation_overview: str
+    companion_playback_files: list[CompanionPlaybackFile] = field(default_factory=list)
 
 
 @dataclass

@@ -2,7 +2,7 @@ import json
 
 from pink_noise.app import generate
 from pink_noise.audio.wav import read_wav_24
-from pink_noise.domain.models import GenerationRequest
+from pink_noise.domain.models import CompanionPlaybackFile, GenerationRequest
 
 
 def test_generate_5_1_consumer_reference_set(tmp_path):
@@ -35,3 +35,42 @@ def test_subwoofer_and_analysis_quickstart_scenarios(tmp_path):
     assert len(bass.track_paths) == 5
     assert json.loads(analysis.validation_path.read_text())["request"]["noise_mode"] == "periodic"
     assert json.loads(pro.validation_path.read_text())["request"]["profile_id"] == "pro-reference"
+
+
+def test_companion_playback_quickstart_scenario(tmp_path, monkeypatch):
+    import pink_noise.app as app
+
+    def fake_exporter(source_path, output_path):
+        output_path.write_text("companion", encoding="utf-8")
+        return CompanionPlaybackFile(
+            output_path,
+            source_path,
+            "media_browser_compatibility",
+            "matroska",
+            True,
+            "flac",
+            "created",
+        )
+
+    monkeypatch.setattr(app, "create_companion_playback", fake_exporter)
+
+    result = generate(
+        GenerationRequest(
+            "consumer-speaker",
+            "5.1",
+            tmp_path,
+            target_channels=("fc",),
+            duration_seconds=1,
+            overwrite=True,
+            companion_playback="video-container",
+        )
+    )
+    data = json.loads(result.validation_path.read_text())
+    assert len(result.track_paths) == 1
+    assert len(result.companion_paths) == 1
+    assert result.track_paths[0].exists()
+    assert result.companion_paths[0].exists()
+    assert data["overall_status"] == "pass"
+    assert data["companion_playback_files"][0]["audio_encoding"] == "flac"
+    assert data["companion_playback_files"][0]["purpose"] == "media_browser_compatibility"
+    assert "playback-compatibility copy" in result.summary_path.read_text()

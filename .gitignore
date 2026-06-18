@@ -28,6 +28,8 @@ generated/
 *.wav
 *.flac
 *.mp3
+*.mka
+*.mkv
 *.log
 
 # Local environment and tool state

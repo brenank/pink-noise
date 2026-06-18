@@ -106,7 +106,30 @@ Expected outcomes:
 - The summary warns that this is not the recommended basic SPL trim-matching signal.
 - Validation records periodic noise mode.
 
-## 6. Confirm Overwrite Protection
+## 6. Generate Optional Companion Playback Files
+
+```bash
+uv run pink-noise generate \
+  --profile consumer-speaker \
+  --layout 5.1 \
+  --channels center \
+  --companion-playback video-container \
+  --output out/5.1-companion \
+  --overwrite
+```
+
+Expected outcomes:
+
+- The primary center-channel WAV file is still generated and validated.
+- Exactly one companion video-container playback file is generated from the
+  validated WAV file.
+- The companion file uses placeholder video and lossless audio.
+- The summary labels the companion file as a playback-compatibility copy and
+  identifies the source WAV file.
+- Validation data records the companion file path, source reference track, audio
+  encoding, container, and compatibility purpose.
+
+## 7. Confirm Overwrite Protection
 
 Run a previously successful command again without `--overwrite`.
 
@@ -117,7 +140,7 @@ Expected outcome:
 - Error output identifies the conflicting output files and suggests using
   `--overwrite` or another destination.
 
-## 7. Confirm Validation Failure for Invalid Profile/Channel Pairing
+## 8. Confirm Validation Failure for Invalid Profile/Channel Pairing
 
 Request a speaker-band calibration profile for an LFE/subwoofer-only target.
 
@@ -126,7 +149,7 @@ Expected outcome:
 - The command exits non-zero or emits a blocking warning.
 - The message recommends the subwoofer calibration profile.
 
-## 8. Inspect Validation Data
+## 9. Inspect Validation Data
 
 Open the generated validation JSON and confirm each track includes:
 
@@ -139,10 +162,11 @@ Open the generated validation JSON and confirm each track includes:
 - Inactive channel silence result below -120 dBFS.
 - Overall pass/fail status.
 - Artifact paths for the summary, validation JSON, and `CALIBRATION-GUIDE.md`.
+- Companion playback metadata when optional companion files are requested.
 
 The JSON structure must match [validation-data.schema.json](./contracts/validation-data.schema.json).
 
-## 9. Inspect WAV Metadata And Custom Layout Contracts
+## 10. Inspect WAV Metadata And Custom Layout Contracts
 
 Expected outcomes:
 
@@ -152,7 +176,7 @@ Expected outcomes:
 - Custom layouts with `channel_mask_policy: directout` keep ordered channels and
   record a zero channel mask.
 
-## 10. Confirm Periodic Duration Behavior
+## 11. Confirm Periodic Duration Behavior
 
 Run a periodic request with a non-multiple-of-4 duration.
 
@@ -161,7 +185,7 @@ Expected outcome:
 - The command exits non-zero.
 - The error explains that periodic noise duration must be a multiple of 4 seconds.
 
-## 11. Confirm Supported Duration Bounds
+## 12. Confirm Supported Duration Bounds
 
 Run a request with `--duration 0.5` or `--duration 3601`.
 

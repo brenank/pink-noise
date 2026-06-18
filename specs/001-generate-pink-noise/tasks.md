@@ -193,7 +193,43 @@ pro reference workflows.
 
 ---
 
-## Phase 7: Polish & Cross-Cutting Concerns
+## Phase 7: User Story 1 Addendum - Optional Companion Playback Export
+
+**Goal**: Extend the primary generation workflow so users can optionally create
+media-player-compatible companion video-container files from validated WAV
+reference tracks when a media browser hides audio-only files.
+
+**Independent Test**: Generate a single center-channel consumer-speaker track with
+`--companion-playback video-container`, verify the WAV is generated and validated
+first, exactly one companion playback file is created from that WAV, the summary
+labels it as a compatibility copy, and validation JSON records its source track,
+container, lossless audio encoding, and compatibility purpose.
+
+### Tests for User Story 1 Addendum
+
+- [X] T063 [P] [US1] Add validation-data schema contract tests for `request.companion_playback`, root `companion_playback_files`, per-track `companion_playback_files`, and `artifacts.companion_playback_paths` in tests/contract/test_validation_schema.py
+- [X] T064 [P] [US1] Add CLI contract tests for `--companion-playback none`, `--companion-playback video-container`, companion count success output, invalid choice rejection, and exporter failure behavior in tests/contract/test_cli_contract.py
+- [X] T065 [P] [US1] Add domain model tests for `CompanionPlaybackFile` fields and `GenerationRequest.companion_playback` default/allowed values in tests/unit/domain/test_models.py
+- [X] T066 [P] [US1] Add companion exporter unit tests for FFmpeg command construction, placeholder video settings, lossless audio encoding, source WAV path handling, missing executable errors, and non-zero exporter failures in tests/unit/output/test_companion.py
+- [X] T067 [P] [US1] Add application unit tests for companion output path planning, overwrite conflict detection, post-validation export ordering, and companion metadata passed to reports in tests/unit/test_app.py
+- [X] T068 [US1] Add integration coverage for the quickstart `--companion-playback video-container` scenario with a controlled companion exporter in tests/integration/test_generate_reference_set.py
+
+### Implementation for User Story 1 Addendum
+
+- [X] T069 [US1] Extend `GenerationRequest`, `GenerationResult`, `ValidationData`, and add `CompanionPlaybackFile` domain data in src/pink_noise/domain/models.py
+- [X] T070 [US1] Implement optional companion playback exporter with FFmpeg executable discovery, command construction, subprocess execution, and actionable errors in src/pink_noise/output/companion.py
+- [X] T071 [US1] Add companion playback filename planning and overwrite conflict detection alongside WAV, summary, validation, and guide artifacts in src/pink_noise/app.py
+- [X] T072 [US1] Integrate companion playback export after each source WAV passes validation and before summary/validation JSON writing in src/pink_noise/app.py
+- [X] T073 [US1] Extend summary and validation JSON rendering with companion file path, source reference track, container, lossless audio encoding, and compatibility-purpose metadata in src/pink_noise/output/reports.py
+- [X] T074 [US1] Add `--companion-playback <none|video-container>` parsing, request mapping, success count output, and error handling to the generate command in src/pink_noise/cli.py
+- [X] T075 [US1] Update generated-artifact documentation with the optional companion playback prerequisite, CLI example, and compatibility-copy warning in README.md
+
+**Checkpoint**: Optional companion playback export is independently functional for
+the primary generation workflow without replacing validated WAV reference files.
+
+---
+
+## Phase 8: Polish & Cross-Cutting Concerns
 
 **Purpose**: Complete documentation, validation, and quality gates across all user
 stories.
@@ -205,6 +241,8 @@ stories.
 - [X] T060 Run quickstart scenarios manually or through integration fixtures and record results in specs/001-generate-pink-noise/checklists/requirements.md
 - [X] T061 Verify generated filenames stay under 120 characters and include profile, layout, channel, band, RMS, and mode in tests/unit/test_app.py
 - [X] T062 Verify no generated WAV, FLAC, MP3, out/, outputs/, or generated/ artifacts are tracked by git using .gitignore
+- [X] T076 Run companion playback contract, unit, and integration tests in tests/contract/test_cli_contract.py, tests/contract/test_validation_schema.py, tests/unit/output/test_companion.py, tests/unit/test_app.py, tests/integration/test_generate_reference_set.py plus compileall checks documented in pyproject.toml
+- [X] T077 [P] Verify companion playback documentation remains generic and contains no player/vendor-specific references in specs/001-generate-pink-noise/spec.md, specs/001-generate-pink-noise/quickstart.md, specs/001-generate-pink-noise/contracts/cli.md, and README.md
 
 ---
 
@@ -218,7 +256,10 @@ stories.
 - **User Story 2 (Phase 4)**: Depends on Foundational and integrates with US1 output, but guide content remains independently testable.
 - **User Story 3 (Phase 5)**: Depends on Foundational; can proceed after US1 CLI/orchestration exists.
 - **User Story 4 (Phase 6)**: Depends on Foundational; can proceed after US1 CLI/orchestration exists.
-- **Polish (Phase 7)**: Depends on all selected stories.
+- **User Story 1 Addendum (Phase 7)**: Depends on US1 and Foundational; can be
+  implemented after the primary generation/reporting workflow exists.
+- **Polish (Phase 8)**: Depends on all selected stories and the companion playback
+  addendum.
 
 ### User Story Dependencies
 
@@ -226,6 +267,8 @@ stories.
 - **US2**: Requires guide integration into successful generation; content tests can start after Foundational.
 - **US3**: Reuses app/CLI/report paths from US1 and extends them for subwoofer profiles.
 - **US4**: Reuses app/CLI/report paths from US1 and extends them for analysis/pro profiles.
+- **US1 Addendum**: Reuses US1 app/CLI/report paths and adds optional companion
+  playback copies after source WAV validation.
 
 ### Within Each User Story
 
@@ -246,7 +289,9 @@ stories.
 - US2 tests T035-T037 can run in parallel.
 - US3 tests T041-T043 can run in parallel before T044.
 - US4 tests T049-T051 can run in parallel before T052.
-- Polish documentation tasks T056 and T057 can run in parallel.
+- Companion addendum tests T063-T067 can run in parallel before T068.
+- Companion implementation tasks T070 and T073 can proceed in parallel after T069.
+- Polish documentation tasks T056, T057, and T077 can run in parallel.
 
 ## Parallel Example: User Story 1
 
@@ -279,6 +324,15 @@ Task: "T050 [P] [US4] Add periodic generation app tests for whole-period duratio
 Task: "T051 [P] [US4] Add report tests for analysis/RTA warnings, pro reference warnings, and periodic noise metadata in tests/unit/output/test_reports.py"
 ```
 
+## Parallel Example: User Story 1 Addendum
+
+```bash
+Task: "T063 [P] [US1] Add validation-data schema contract tests for companion playback metadata in tests/contract/test_validation_schema.py"
+Task: "T064 [P] [US1] Add CLI contract tests for --companion-playback behavior in tests/contract/test_cli_contract.py"
+Task: "T066 [P] [US1] Add companion exporter unit tests in tests/unit/output/test_companion.py"
+Task: "T067 [P] [US1] Add application unit tests for companion export planning in tests/unit/test_app.py"
+```
+
 ---
 
 ## Implementation Strategy
@@ -296,7 +350,9 @@ Task: "T051 [P] [US4] Add report tests for analysis/RTA warnings, pro reference 
 2. Add US2 beginner guide usability and safety support.
 3. Add US3 subwoofer direct LFE and bass-managed workflows.
 4. Add US4 full-band analysis, periodic mode, and pro reference workflows.
-5. Complete Phase 7 polish and quality gates.
+5. Add the US1 companion playback export addendum when media-browser compatibility
+   copies are needed.
+6. Complete Phase 8 polish and quality gates.
 
 ### Notes
 

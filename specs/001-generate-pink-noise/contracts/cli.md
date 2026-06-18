@@ -28,6 +28,11 @@ pink-noise generate --profile <profile> --layout <layout> --output <directory> [
 - `--overwrite`: Permit replacing existing generated files.
 - `--summary-name <name>`: Human-readable summary filename.
 - `--validation-name <name>`: Machine-readable validation filename.
+- `--companion-playback <none|video-container>`: Optional compatibility copies for
+  media browsers that hide audio-only files. Defaults to `none`. When set to
+  `video-container`, the command writes one companion video-container file per
+  selected reference track using placeholder video and lossless audio derived from
+  the validated WAV file.
 
 ## Built-In Layout IDs
 
@@ -46,6 +51,7 @@ pink-noise generate --profile <profile> --layout <layout> --output <directory> [
 On success the command writes:
 
 - One or more 48 kHz, 24-bit PCM WAV files.
+- Optional companion video-container playback files, when requested.
 - One human-readable Markdown summary.
 - One machine-readable JSON validation data file.
 - One standalone beginner guide named `CALIBRATION-GUIDE.md`.
@@ -54,6 +60,7 @@ The command exits with status `0` and prints:
 
 ```text
 Generated <count> reference tracks
+Companion playback files: <count>
 Summary: <path>
 Validation: <path>
 Calibration guide: <path>
@@ -68,6 +75,8 @@ The command exits non-zero and writes no ready status when:
 - Requested profile and target channel are incompatible.
 - Output files already exist and `--overwrite` is not set.
 - A lossy output format is requested.
+- Companion playback files are requested but the required compatibility exporter is
+  unavailable or fails.
 - Generated or written tracks fail validation.
 - The output directory is unavailable.
 
@@ -90,3 +99,11 @@ Custom layout validation follows the rules in [data-model.md](../data-model.md).
 
 Periodic pink noise is generated in seamless 4-second periods. Requests using
 `--noise-mode periodic` must use a duration that is an exact multiple of 4 seconds.
+
+## Companion Playback Files
+
+Companion playback files are compatibility copies for media browsers that hide
+audio-only files. They do not replace the primary validated WAV files and must be
+generated only after the source WAV passes validation. The summary and validation
+data must identify each companion file's source reference track, lossless audio
+encoding, container, and compatibility purpose.

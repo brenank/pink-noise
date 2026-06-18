@@ -18,6 +18,7 @@
 - Q: What default track duration should generated material use? → A: 60-second default tracks for all profiles, with custom duration allowed.
 - Q: What validation tolerances should generated files use? → A: Calibration-grade validation: no clipping, RMS within +/-0.1 dB, pink slope within +/-0.5 dB/octave, silent channels below -120 dBFS.
 - Q: How should beginner instructions be delivered? → A: Generate a separate CALIBRATION-GUIDE.md file and link it from the summary.
+- Q: Should the tool support players that hide audio-only files? → A: Add optional media-player-compatible companion video-container files with placeholder video and lossless audio; primary validated WAV files remain the calibration reference.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -166,6 +167,8 @@ and warnings about measurement limitations.
   channel routing or level.
 - A user starts playback at reference volume before confirming routing and safe
   meter setup.
+- A media browser does not display audio-only reference files even though the
+  playback device can handle the underlying audio stream.
 
 ## Requirements *(mandatory)*
 
@@ -202,6 +205,11 @@ and warnings about measurement limitations.
   digital silence.
 - **FR-012**: The system MUST reject lossy output formats for calibration reference
   material.
+- **FR-012a**: The system MUST optionally generate media-player-compatible
+  companion video-container files for players that hide audio-only files; these
+  companion files MUST use placeholder video, lossless audio derived from the
+  validated reference track, and MUST NOT replace the primary 48 kHz, 24-bit PCM
+  WAV calibration reference files.
 - **FR-013**: The system MUST prevent accidental overwrite of existing generated
   material unless the user explicitly confirms replacement.
 - **FR-014**: The system MUST reject invalid layouts, duplicate channel names,
@@ -236,6 +244,10 @@ and warnings about measurement limitations.
 - **FR-022**: The system MUST generate machine-readable validation data containing
   the same validation outcomes as the human-readable summary so generated material
   can be audited or regenerated later.
+- **FR-022a**: When companion video-container files are requested, the system MUST
+  record their paths, source reference track, audio encoding, and intended
+  compatibility purpose in the human-readable summary and machine-readable
+  validation data.
 - **FR-023**: The system MUST default generated tracks to 60 seconds for all
   profiles and allow users to choose a custom duration within supported bounds.
 - **FR-024**: The system MUST generate a separate `CALIBRATION-GUIDE.md`
@@ -276,6 +288,9 @@ and warnings about measurement limitations.
 - **UX-005**: The feature MUST label every generated file with enough information to
   identify profile, layout, channel, RMS level, and bandwidth without opening the
   summary report.
+- **UX-005a**: Companion video-container filenames and summary entries MUST make
+  clear that they are playback-compatibility copies, not separate calibration
+  signals or independently validated source tracks.
 - **UX-006**: The feature MUST write beginner-facing guidance in plain language,
   define unavoidable terms on first use, and avoid assuming the user knows
   calibration jargon.
@@ -292,6 +307,9 @@ and warnings about measurement limitations.
   surround, height, or LFE/subwoofer.
 - **Reference Track**: A lossless audio file containing pink noise for one target
   channel and digital silence for all other channels.
+- **Companion Playback File**: An optional media-player-compatible video-container
+  copy of a reference track containing placeholder video and lossless audio for
+  browsing environments that hide audio-only files.
 - **Noise Specification**: The spectral, level, bandwidth, crest-factor,
   inactive-channel silence, and repeatability criteria used to validate generated
   material.
@@ -328,6 +346,9 @@ and warnings about measurement limitations.
   position, reference master volume, selected profile, and RMS reference level.
 - **SC-007**: 100% of successful generation runs produce both a human-readable
   summary and machine-readable validation data.
+- **SC-007a**: When companion playback files are requested, 100% of selected
+  reference tracks receive exactly one companion file whose summary and validation
+  metadata identify the source track and compatibility purpose.
 - **SC-008**: 100% of generated tracks use the 60-second default duration unless
   the user selects a supported custom duration.
 - **SC-009**: 100% of invalid layout, format, clipping, overwrite, or mismatched
@@ -358,6 +379,9 @@ and warnings about measurement limitations.
   calibration; the measured SPL depends on the user's playback chain, room, meter,
   speaker trim adjustments, and whether the playback path preserves the file
   without normalization, DSP, downmixing, or upmixing.
+- Some media browsers may hide audio-only files; optional companion playback files
+  are intended only to make validated lossless audio discoverable in those
+  browsers.
 - Built-in layouts cover 2.0, 2.1, 3.1, 5.1, 7.1, 5.1.2, 5.1.4, 7.1.2, and 7.1.4;
   custom layouts are available for systems outside those presets.
 - The initial target user is an installer, calibrator, or advanced home theater user

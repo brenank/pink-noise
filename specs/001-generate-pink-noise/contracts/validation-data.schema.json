@@ -20,6 +20,7 @@
         "bit_depth": { "type": "integer", "const": 24 },
         "noise_mode": { "type": "string", "enum": ["random", "periodic"] },
         "seed": { "type": ["string", "integer", "null"] },
+        "companion_playback": { "type": "string", "enum": ["none", "video-container"] },
         "routing_intent": { "type": "string" },
         "channel_mask": { "type": "integer", "minimum": 0 },
         "channel_mask_policy": { "type": "string", "enum": ["speaker_positions", "directout"] },
@@ -89,6 +90,10 @@
           "channel_mask": { "type": "integer", "minimum": 0 },
           "noise_mode": { "type": "string", "enum": ["random", "periodic"] },
           "periodic_period_seconds": { "type": ["number", "null"] },
+          "companion_playback_files": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/companionPlaybackFile" }
+          },
           "wav_format": { "type": "object" },
           "failures": {
             "type": "array",
@@ -111,13 +116,46 @@
         "calibration_guide_path": {
           "type": "string",
           "pattern": "(^|/)CALIBRATION-GUIDE\\.md$"
+        },
+        "companion_playback_paths": {
+          "type": "array",
+          "items": { "type": "string" }
         }
       },
       "additionalProperties": true
     },
+    "companion_playback_files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/companionPlaybackFile" }
+    },
     "errors": {
       "type": "array",
       "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "companionPlaybackFile": {
+      "type": "object",
+      "required": [
+        "path",
+        "source_reference_track_path",
+        "purpose",
+        "container",
+        "placeholder_video",
+        "audio_encoding",
+        "status"
+      ],
+      "properties": {
+        "path": { "type": "string" },
+        "source_reference_track_path": { "type": "string" },
+        "purpose": { "type": "string", "const": "media_browser_compatibility" },
+        "container": { "type": "string" },
+        "placeholder_video": { "type": "boolean", "const": true },
+        "audio_encoding": { "type": "string" },
+        "status": { "type": "string", "enum": ["created", "failed"] },
+        "error": { "type": "string" }
+      },
+      "additionalProperties": true
     }
   },
   "additionalProperties": true

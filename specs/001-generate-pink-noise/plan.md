@@ -12,7 +12,8 @@ multichannel routing, one active channel per reference track, profile-specific
 band limits and RMS levels, paired human-readable plus machine-readable validation
 reports, and a standalone beginner-facing `CALIBRATION-GUIDE.md`. The
 implementation will focus on deterministic generation, auditable validation, safe
-defaults, and plain-language consumer guidance for home theater calibration.
+defaults, plain-language consumer guidance for home theater calibration, and
+optional companion playback files for media browsers that hide audio-only files.
 
 ## Technical Context
 
@@ -21,16 +22,20 @@ development/test baseline
 
 **Primary Dependencies**: NumPy >=2.4.6,<2.5 for deterministic signal generation,
 FFT analysis, and validation math; Python standard library for CLI parsing, file IO,
-and JSON; local WAVE_FORMAT_EXTENSIBLE writer for 24-bit multichannel WAV output;
-pytest >=9.1,<10 and jsonschema >=4.26,<5 for tests/contracts; hatchling
->=1.30.1,<2 for packaging
+JSON, and subprocess execution; local WAVE_FORMAT_EXTENSIBLE writer for 24-bit
+multichannel WAV output; optional FFmpeg executable for media-player-compatible
+companion video-container files with placeholder video and lossless audio; pytest
+>=9.1,<10 and jsonschema >=4.26,<5 for tests/contracts; hatchling >=1.30.1,<2 for
+packaging
 
-**Storage**: Local filesystem outputs: WAV reference files, Markdown summary, JSON
-validation data, standalone Markdown calibration guide
+**Storage**: Local filesystem outputs: WAV reference files, optional companion
+video-container playback files, Markdown summary, JSON validation data, standalone
+Markdown calibration guide
 
 **Testing**: pytest with unit tests for noise generation, profile validation, channel
-routing, WAV metadata/writing, report generation, calibration-guide generation, and
-end-to-end CLI fixtures
+routing, WAV metadata/writing, companion playback export command construction and
+failure handling, report generation, calibration-guide generation, and end-to-end
+CLI fixtures
 
 **Target Platform**: Local macOS/Linux/Windows command-line execution
 
@@ -39,7 +44,8 @@ end-to-end CLI fixtures
 **Constraints**: Offline-capable; no lossy output; generated files must be
 repeatable for identical settings; default outputs must be safe for playback at
 reference-volume calibration workflows; validation must fail on clipping, RMS,
-spectral-slope, or channel-isolation violations
+spectral-slope, or channel-isolation violations; companion playback files are
+optional compatibility copies and must not replace the primary validated WAV files
 
 **Scale/Scope**: Built-in layouts for 2.0, 2.1, 3.1, 5.1, 7.1, 5.1.2, 5.1.4,
 7.1.2, and 7.1.4, plus custom layouts; generate 60-second default tracks per
@@ -60,8 +66,9 @@ target channel with custom duration support
   signal math, routing, validation thresholds, reports, and end-to-end generation.
 - **User Experience**: PASS. CLI output, filenames, summaries, and errors are
   required to distinguish speaker calibration, subwoofer calibration, full-band
-  analysis, and pro reference workflows. A standalone beginner calibration guide is
-  required for consumer users before reference-volume playback.
+  analysis, pro reference workflows, and optional playback-compatibility copies. A
+  standalone beginner calibration guide is required for consumer users before
+  reference-volume playback.
 - **Simplicity**: PASS. A local CLI with shallow library modules is the smallest
   structure that supports repeatable generation, reports, validation, and future
   reuse while keeping the starting point obvious.
@@ -103,6 +110,7 @@ src/
     │   └── validation.py
     └── output/
         ├── __init__.py
+        ├── companion.py
         ├── reports.py
         └── guide.py
 
@@ -123,6 +131,7 @@ tests/
     │   ├── test_wav.py
     │   └── test_validation.py
     └── output/
+        ├── test_companion.py
         ├── test_guide.py
         └── test_reports.py
 ```
@@ -131,15 +140,16 @@ tests/
 `cli.py` as a thin installed command adapter, `__main__.py` for
 `python -m pink_noise`, and `app.py` as the workflow orchestrator. Group source by
 responsibility: `domain/` owns profiles, layouts, and shared models; `audio/` owns
-generation, WAV writing, and signal validation; `output/` owns reports and the
-beginner calibration guide. Keep the tree shallow so consumers and contributors can
-identify the entry point quickly while still seeing which modules affect audio
-correctness versus user-facing documentation.
+generation, WAV writing, and signal validation; `output/` owns reports, the
+beginner calibration guide, and optional companion playback files derived from
+already validated reference tracks. Keep the tree shallow so consumers and
+contributors can identify the entry point quickly while still seeing which modules
+affect audio correctness versus user-facing documentation.
 
 ## Additional Research Status
 
-Web-backed research completed on 2026-06-18 and recorded in
-[research.md](./research.md). Decisions now cover:
+Research completed on 2026-06-18 and recorded in [research.md](./research.md).
+Decisions now cover:
 
 1. Concrete dependency and contract versions.
 2. WAVE_FORMAT_EXTENSIBLE metadata, channel masks, and channel ordering.
@@ -150,7 +160,10 @@ Web-backed research completed on 2026-06-18 and recorded in
 7. JSON-only custom layout schema versioning.
 8. Consumer-readable artifact filename convention.
 9. Practical guide usability validation.
+10. Optional companion playback container strategy and dependency handling.
 
 ## Complexity Tracking
 
-No constitution violations.
+No constitution violations. Optional companion playback export introduces an
+external executable dependency only for users who request that compatibility copy;
+the core WAV generation and validation path remains dependency-light and offline.

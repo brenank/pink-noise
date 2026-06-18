@@ -12,7 +12,8 @@ from .audio.generator import generate_pink_noise
 from .audio.validation import validate_track
 from .audio.wav import write_wav_24
 from .domain.layouts import get_layout
-from .domain.models import GenerationRequest, NoiseSpecification, ValidationError
+from .domain.models import CompanionPlaybackFile, GenerationRequest, NoiseSpecification, ValidationError
+from .output.companion import create_companion_playback
 from .domain.profiles import compatibility_error, get_profile, is_channel_compatible
 from .output.guide import render_guide
 from .output.reports import render_summary, render_validation_data
@@ -21,6 +22,7 @@ from .output.reports import render_summary, render_validation_data
 @dataclass(frozen=True)
 class GenerationResult:
     track_paths: list[Path]
+    companion_paths: list[Path]
     summary_path: Path
     validation_path: Path
     guide_path: Path
@@ -41,9 +43,11 @@ def generate(request: GenerationRequest) -> GenerationResult:
         _filename(output_dir, profile.id, layout.id, channel.order, channel.id, profile.default_band_hz, profile.default_rms_dbfs, mode)
         for channel in targets
     ]
+    companion_output_paths = [_companion_filename(path) for path in planned_paths] if request.companion_playback == "video-container" else []
     summary_path = output_dir / request.summary_name
     validation_path = output_dir / request.validation_name
     guide_path = output_dir / "CALIBRATION-GUIDE.md"
+    planned_paths.extend(companion_output_paths)
     planned_paths.extend([summary_path, validation_path, guide_path])
     conflicts = [path for path in planned_paths if path.exists()]
     if conflicts and not request.overwrite:
@@ -52,6 +56,7 @@ def generate(request: GenerationRequest) -> GenerationResult:
 
     track_results = []
     wav_paths: list[Path] = []
+    companion_files: list[CompanionPlaybackFile] = []
     for index, channel in enumerate(targets):
         spec = NoiseSpecification(
             rms_dbfs=profile.default_rms_dbfs,
@@ -83,15 +88,19 @@ def generate(request: GenerationRequest) -> GenerationResult:
         wav_paths.append(wav_path)
         if validation["status"] != "pass":
             raise ValidationError(f"generated track failed validation for channel '{channel.id}': {validation['failures']}")
+        if request.companion_playback == "video-container":
+            companion = create_companion_playback(wav_path, _companion_filename(wav_path))
+            companion_files.append(companion)
+            validation["companion_playback_files"] = [_companion_to_dict(companion)]
 
-    validation_data = render_validation_data(request, profile, layout, track_results, str(summary_path), str(validation_path), str(guide_path))
+    validation_data = render_validation_data(request, profile, layout, track_results, str(summary_path), str(validation_path), str(guide_path), companion_files)
     validation_data["generated_at"] = datetime.now(timezone.utc).isoformat()
-    summary = render_summary(request, profile, layout, track_results, str(summary_path), str(validation_path), str(guide_path))
+    summary = render_summary(request, profile, layout, track_results, str(summary_path), str(validation_path), str(guide_path), companion_files)
     guide = render_guide(profile)
     summary_path.write_text(summary, encoding="utf-8")
     validation_path.write_text(json.dumps(validation_data, indent=2), encoding="utf-8")
     guide_path.write_text(guide, encoding="utf-8")
-    return GenerationResult(wav_paths, summary_path, validation_path, guide_path, validation_data)
+    return GenerationResult(wav_paths, [companion.path for companion in companion_files], summary_path, validation_path, guide_path, validation_data)
 
 
 def _target_channels(request: GenerationRequest, profile, layout):
@@ -116,3 +125,22 @@ def _filename(output_dir: Path, profile_id: str, layout_id: str, channel_index: 
     if len(safe) > 119:
         safe = safe[:115] + ".wav"
     return output_dir / safe
+
+
+def _companion_filename(wav_path: Path) -> Path:
+    return wav_path.with_name(f"{wav_path.stem}__companion.mkv")
+
+
+def _companion_to_dict(companion: CompanionPlaybackFile) -> dict[str, object]:
+    data: dict[str, object] = {
+        "path": str(companion.path),
+        "source_reference_track_path": str(companion.source_reference_track_path),
+        "purpose": companion.purpose,
+        "container": companion.container,
+        "placeholder_video": companion.placeholder_video,
+        "audio_encoding": companion.audio_encoding,
+        "status": companion.status,
+    }
+    if companion.error:
+        data["error"] = companion.error
+    return data

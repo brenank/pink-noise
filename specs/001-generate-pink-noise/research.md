@@ -388,3 +388,31 @@ before v1 release.
 **Alternatives considered**:
 - Automated checks only: useful but cannot prove the guide is understandable.
 - Formal usability study on every change: disproportionate for a local generator.
+
+## Decision: Generate optional companion playback files with FFmpeg
+
+**Decision**: Keep 48 kHz, 24-bit PCM WAV as the primary validated calibration
+artifact. When the user requests companion playback files, generate one
+media-player-compatible video-container file per selected reference track by
+invoking an installed FFmpeg executable. The companion file uses a minimal
+placeholder video stream and lossless audio derived from the already validated WAV
+track. Companion filenames mirror the source track name with a companion suffix and
+must be reported as playback-compatibility copies, not independently validated
+source tracks.
+
+**Rationale**: Some media browsers hide audio-only files even when their playback
+pipeline can handle the audio stream. A video container makes the files visible to
+those browsers while keeping the calibration signal lossless and preserving the
+primary WAV validation contract. Treating FFmpeg as an optional executable avoids
+adding large binary dependencies to the normal generator path and keeps all
+companion export failures scoped to users who explicitly request that output.
+
+**Alternatives considered**:
+- Make video-container files the primary output: rejected because WAV remains the
+  most inspectable, directly validated calibration artifact.
+- Generate audio-only FLAC/MKA companions: lossless, but does not address media
+  browsers that hide audio-only files.
+- Implement container muxing directly in Python: rejected because it adds complex
+  media-container behavior outside the calibration domain.
+- Require companion files for every run: rejected because most workflows only need
+  WAV files and should not depend on an external encoder.
