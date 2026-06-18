@@ -38,3 +38,9 @@
 - Domain audio specifications such as RMS level, bandwidth, channel routing, and
   lossless file requirements are product requirements for calibration material, not
   implementation stack details.
+- Implementation validation passed through automated unit, contract, and
+  integration tests. Quickstart scenarios for consumer speaker generation, guide
+  output, subwoofer LFE, bass-managed sub-system, full-band periodic analysis,
+  pro-reference generation, overwrite protection, mismatch rejection, validation
+  JSON, WAV metadata, custom-layout schema, and periodic duration behavior are
+  represented in tests or documented quickstart checks.

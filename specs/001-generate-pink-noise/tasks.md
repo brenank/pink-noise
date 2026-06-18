@@ -18,10 +18,10 @@ implementation and testing. Source-file tasks follow the plan structure:
 
 **Purpose**: Initialize the Python package, test harness, and source tree.
 
-- [ ] T001 Create Python package metadata with Python >=3.11, NumPy >=2.4.6,<2.5, pytest >=9.1,<10, jsonschema >=4.26,<5, hatchling >=1.30.1,<2, build >=1.5,<2, and `pink-noise = "pink_noise.cli:main"` in pyproject.toml
-- [ ] T002 Create package directories and empty package files in src/pink_noise/__init__.py, src/pink_noise/__main__.py, src/pink_noise/cli.py, src/pink_noise/app.py, src/pink_noise/domain/__init__.py, src/pink_noise/audio/__init__.py, and src/pink_noise/output/__init__.py
-- [ ] T003 [P] Create planned test directories and package markers in tests/contract/.gitkeep, tests/integration/.gitkeep, tests/unit/domain/.gitkeep, tests/unit/audio/.gitkeep, and tests/unit/output/.gitkeep
-- [ ] T004 [P] Configure pytest test discovery and warning behavior for tests/ in pyproject.toml
+- [X] T001 Create Python package metadata with Python >=3.11, NumPy >=2.4.6,<2.5, pytest >=9.1,<10, jsonschema >=4.26,<5, hatchling >=1.30.1,<2, build >=1.5,<2, and `pink-noise = "pink_noise.cli:main"` in pyproject.toml
+- [X] T002 Create package directories and empty package files in src/pink_noise/__init__.py, src/pink_noise/__main__.py, src/pink_noise/cli.py, src/pink_noise/app.py, src/pink_noise/domain/__init__.py, src/pink_noise/audio/__init__.py, and src/pink_noise/output/__init__.py
+- [X] T003 [P] Create planned test directories and package markers in tests/contract/.gitkeep, tests/integration/.gitkeep, tests/unit/domain/.gitkeep, tests/unit/audio/.gitkeep, and tests/unit/output/.gitkeep
+- [X] T004 [P] Configure pytest test discovery and warning behavior for tests/ in pyproject.toml
 
 ---
 
@@ -34,41 +34,41 @@ helpers that every user story depends on.
 
 ### Contract and Schema Tests
 
-- [ ] T005 [P] Add validation-data schema contract tests for required request, track, and artifact fields in tests/contract/test_validation_schema.py
-- [ ] T006 [P] Add CLI contract tests for argument parsing, success text, non-zero error behavior, and `python -m pink_noise` delegation in tests/contract/test_cli_contract.py
-- [ ] T007 [P] Add custom layout JSON Schema contract tests for `kind`, `schema_version`, ordered channels, roles, aliases, and `channel_mask_policy` in tests/contract/test_custom_layout_schema.py
+- [X] T005 [P] Add validation-data schema contract tests for required request, track, and artifact fields in tests/contract/test_validation_schema.py
+- [X] T006 [P] Add CLI contract tests for argument parsing, success text, non-zero error behavior, and `python -m pink_noise` delegation in tests/contract/test_cli_contract.py
+- [X] T007 [P] Add custom layout JSON Schema contract tests for `kind`, `schema_version`, ordered channels, roles, aliases, and `channel_mask_policy` in tests/contract/test_custom_layout_schema.py
 
 ### Contract and Schema Implementation
 
-- [ ] T008 Update validation report schema with routing intent, channel mask, WAV format metadata, validation thresholds, and noise-mode details in specs/001-generate-pink-noise/contracts/validation-data.schema.json
-- [ ] T009 Add custom layout JSON Schema Draft 2020-12 contract in specs/001-generate-pink-noise/contracts/custom-layout.schema.json
-- [ ] T010 Update CLI contract with JSON custom layout format, `schema_version`, `kind`, `channel_mask_policy`, and periodic duration behavior in specs/001-generate-pink-noise/contracts/cli.md
-- [ ] T011 Update data model with channel masks, WAVE speaker positions, `channel_mask_policy`, periodic period metadata, filename convention, and validation thresholds in specs/001-generate-pink-noise/data-model.md
+- [X] T008 Update validation report schema with routing intent, channel mask, WAV format metadata, validation thresholds, and noise-mode details in specs/001-generate-pink-noise/contracts/validation-data.schema.json
+- [X] T009 Add custom layout JSON Schema Draft 2020-12 contract in specs/001-generate-pink-noise/contracts/custom-layout.schema.json
+- [X] T010 Update CLI contract with JSON custom layout format, `schema_version`, `kind`, `channel_mask_policy`, and periodic duration behavior in specs/001-generate-pink-noise/contracts/cli.md
+- [X] T011 Update data model with channel masks, WAVE speaker positions, `channel_mask_policy`, periodic period metadata, filename convention, and validation thresholds in specs/001-generate-pink-noise/data-model.md
 
 ### Domain Tests
 
-- [ ] T012 [P] Add domain model tests for CalibrationProfile, SpeakerLayout, SpeakerChannel, NoiseSpecification, GenerationRequest, ReferenceTrack, GenerationSummary, ValidationData, and CalibrationGuide in tests/unit/domain/test_models.py
-- [ ] T013 [P] Add built-in layout tests for 2.0, 2.1, 3.1, 5.1, 7.1, 5.1.2, 5.1.4, 7.1.2, 7.1.4 channel order and WAVE channel masks in tests/unit/domain/test_layouts.py
-- [ ] T014 [P] Add calibration profile tests for consumer-speaker, subwoofer-lfe-check, subwoofer-bass-managed, full-band-analysis, and pro-reference defaults in tests/unit/domain/test_profiles.py
+- [X] T012 [P] Add domain model tests for CalibrationProfile, SpeakerLayout, SpeakerChannel, NoiseSpecification, GenerationRequest, ReferenceTrack, GenerationSummary, ValidationData, and CalibrationGuide in tests/unit/domain/test_models.py
+- [X] T013 [P] Add built-in layout tests for 2.0, 2.1, 3.1, 5.1, 7.1, 5.1.2, 5.1.4, 7.1.2, 7.1.4 channel order and WAVE channel masks in tests/unit/domain/test_layouts.py
+- [X] T014 [P] Add calibration profile tests for consumer-speaker, subwoofer-lfe-check, subwoofer-bass-managed, full-band-analysis, and pro-reference defaults in tests/unit/domain/test_profiles.py
 
 ### Domain Implementation
 
-- [ ] T015 Implement typed domain entities and validation errors in src/pink_noise/domain/models.py
-- [ ] T016 Implement built-in layouts, channel IDs, WAVE speaker positions, channel masks, and custom layout parsing in src/pink_noise/domain/layouts.py
-- [ ] T017 Implement calibration profile definitions, compatibility checks, default bands, RMS levels, warnings, and duration bounds in src/pink_noise/domain/profiles.py
+- [X] T015 Implement typed domain entities and validation errors in src/pink_noise/domain/models.py
+- [X] T016 Implement built-in layouts, channel IDs, WAVE speaker positions, channel masks, and custom layout parsing in src/pink_noise/domain/layouts.py
+- [X] T017 Implement calibration profile definitions, compatibility checks, default bands, RMS levels, warnings, and duration bounds in src/pink_noise/domain/profiles.py
 
 ### Audio Tests
 
-- [ ] T018 [P] Add pink-noise generator tests for deterministic random mode, 1/sqrt(f) shaping, RMS normalization, band limits, and seeded repeatability in tests/unit/audio/test_generator.py
-- [ ] T019 [P] Add periodic pink-noise tests for 4-second period, 192000 samples at 48 kHz, 0.25 Hz bin spacing, seamless tiling, and rejection of non-period-multiple durations in tests/unit/audio/test_generator.py
-- [ ] T020 [P] Add WAV writer tests for WAVE_FORMAT_EXTENSIBLE headers, PCM GUID, channel masks, interleaved order, signed packed 24-bit samples, and inactive-channel zero bytes in tests/unit/audio/test_wav.py
-- [ ] T021 [P] Add validation tests for post-write PCM decoding, RMS tolerance, clipping, crest factor, silence threshold, bandwidth, and pink-slope regression in tests/unit/audio/test_validation.py
+- [X] T018 [P] Add pink-noise generator tests for deterministic random mode, 1/sqrt(f) shaping, RMS normalization, band limits, and seeded repeatability in tests/unit/audio/test_generator.py
+- [X] T019 [P] Add periodic pink-noise tests for 4-second period, 192000 samples at 48 kHz, 0.25 Hz bin spacing, seamless tiling, and rejection of non-period-multiple durations in tests/unit/audio/test_generator.py
+- [X] T020 [P] Add WAV writer tests for WAVE_FORMAT_EXTENSIBLE headers, PCM GUID, channel masks, interleaved order, signed packed 24-bit samples, and inactive-channel zero bytes in tests/unit/audio/test_wav.py
+- [X] T021 [P] Add validation tests for post-write PCM decoding, RMS tolerance, clipping, crest factor, silence threshold, bandwidth, and pink-slope regression in tests/unit/audio/test_validation.py
 
 ### Audio Implementation
 
-- [ ] T022 Implement random and periodic FFT pink-noise generation using NumPy in src/pink_noise/audio/generator.py
-- [ ] T023 Implement WAVE_FORMAT_EXTENSIBLE 24-bit PCM writer and PCM decoder/readback helper in src/pink_noise/audio/wav.py
-- [ ] T024 Implement post-write validation for RMS, peak, crest factor, clipping, bandwidth, channel isolation, silence, and spectral slope in src/pink_noise/audio/validation.py
+- [X] T022 Implement random and periodic FFT pink-noise generation using NumPy in src/pink_noise/audio/generator.py
+- [X] T023 Implement WAVE_FORMAT_EXTENSIBLE 24-bit PCM writer and PCM decoder/readback helper in src/pink_noise/audio/wav.py
+- [X] T024 Implement post-write validation for RMS, peak, crest factor, clipping, bandwidth, channel isolation, silence, and spectral slope in src/pink_noise/audio/validation.py
 
 **Checkpoint**: Foundation complete. Domain contracts, audio primitives, WAV
 serialization, and validation are ready for user-story workflows.
@@ -87,19 +87,19 @@ inactive channels, WAVE channel metadata, and 75 dB C-weighted Slow guidance.
 
 ### Tests for User Story 1
 
-- [ ] T025 [P] [US1] Add CLI contract test for 5.1 consumer-speaker generation success output and artifact paths in tests/contract/test_cli_contract.py
-- [ ] T026 [P] [US1] Add application unit tests for consumer-speaker request validation, target-channel expansion, overwrite protection, and artifact naming in tests/unit/test_app.py
-- [ ] T027 [P] [US1] Add report unit tests for consumer speaker summaries with profile, layout, channel mapping, RMS, bandwidth, seed, validation results, and guide link in tests/unit/output/test_reports.py
-- [ ] T028 [US1] Add end-to-end 5.1 consumer-speaker integration test covering generated WAVs, summary, validation JSON, and CALIBRATION-GUIDE.md presence in tests/integration/test_generate_reference_set.py
+- [X] T025 [P] [US1] Add CLI contract test for 5.1 consumer-speaker generation success output and artifact paths in tests/contract/test_cli_contract.py
+- [X] T026 [P] [US1] Add application unit tests for consumer-speaker request validation, target-channel expansion, overwrite protection, and artifact naming in tests/unit/test_app.py
+- [X] T027 [P] [US1] Add report unit tests for consumer speaker summaries with profile, layout, channel mapping, RMS, bandwidth, seed, validation results, and guide link in tests/unit/output/test_reports.py
+- [X] T028 [US1] Add end-to-end 5.1 consumer-speaker integration test covering generated WAVs, summary, validation JSON, and CALIBRATION-GUIDE.md presence in tests/integration/test_generate_reference_set.py
 
 ### Implementation for User Story 1
 
-- [ ] T029 [US1] Implement consumer-speaker generation orchestration, request validation, overwrite handling, and artifact planning in src/pink_noise/app.py
-- [ ] T030 [US1] Implement consumer-readable WAV filename generation using `{profile}__{layout}__ch{index}-{channel}__{band}hz__{rms}dbfs__{mode}.wav` in src/pink_noise/app.py
-- [ ] T031 [US1] Implement Markdown summary rendering for consumer speaker calibration outputs in src/pink_noise/output/reports.py
-- [ ] T032 [US1] Implement validation JSON rendering from post-write validation results in src/pink_noise/output/reports.py
-- [ ] T033 [US1] Implement argparse CLI `pink-noise generate` command, status output, and non-zero error paths in src/pink_noise/cli.py
-- [ ] T034 [US1] Implement `python -m pink_noise` delegation to the CLI main function in src/pink_noise/__main__.py
+- [X] T029 [US1] Implement consumer-speaker generation orchestration, request validation, overwrite handling, and artifact planning in src/pink_noise/app.py
+- [X] T030 [US1] Implement consumer-readable WAV filename generation using `{profile}__{layout}__ch{index}-{channel}__{band}hz__{rms}dbfs__{mode}.wav` in src/pink_noise/app.py
+- [X] T031 [US1] Implement Markdown summary rendering for consumer speaker calibration outputs in src/pink_noise/output/reports.py
+- [X] T032 [US1] Implement validation JSON rendering from post-write validation results in src/pink_noise/output/reports.py
+- [X] T033 [US1] Implement argparse CLI `pink-noise generate` command, status output, and non-zero error paths in src/pink_noise/cli.py
+- [X] T034 [US1] Implement `python -m pink_noise` delegation to the CLI main function in src/pink_noise/__main__.py
 
 **Checkpoint**: User Story 1 is independently functional and can produce validated
 consumer speaker-calibration files.
@@ -119,15 +119,15 @@ troubleshooting, and fallback guidance before reference-volume instructions.
 
 ### Tests for User Story 2
 
-- [ ] T035 [P] [US2] Add calibration guide content and ordering tests for preflight, low-volume start, direct-routing confirmation, C-weighted Slow setup, 75 dB workflow, and fallback guidance in tests/unit/output/test_guide.py
-- [ ] T036 [P] [US2] Add guide integration assertions that consumer generation writes CALIBRATION-GUIDE.md and links it from the summary in tests/integration/test_generate_reference_set.py
-- [ ] T037 [P] [US2] Add guide usability acceptance checklist test for required file-use map, advanced-file warnings, and troubleshooting entries in tests/unit/output/test_guide.py
+- [X] T035 [P] [US2] Add calibration guide content and ordering tests for preflight, low-volume start, direct-routing confirmation, C-weighted Slow setup, 75 dB workflow, and fallback guidance in tests/unit/output/test_guide.py
+- [X] T036 [P] [US2] Add guide integration assertions that consumer generation writes CALIBRATION-GUIDE.md and links it from the summary in tests/integration/test_generate_reference_set.py
+- [X] T037 [P] [US2] Add guide usability acceptance checklist test for required file-use map, advanced-file warnings, and troubleshooting entries in tests/unit/output/test_guide.py
 
 ### Implementation for User Story 2
 
-- [ ] T038 [US2] Implement beginner guide rendering with preflight, safety, receiver setup, meter setup, speaker trim, file-use map, troubleshooting, and fallback sections in src/pink_noise/output/guide.py
-- [ ] T039 [US2] Integrate CALIBRATION-GUIDE.md writing and summary linking into successful generation workflow in src/pink_noise/app.py
-- [ ] T040 [US2] Add guide review checklist artifact for the one lightweight novice walkthrough in specs/001-generate-pink-noise/checklists/guide-usability.md
+- [X] T038 [US2] Implement beginner guide rendering with preflight, safety, receiver setup, meter setup, speaker trim, file-use map, troubleshooting, and fallback sections in src/pink_noise/output/guide.py
+- [X] T039 [US2] Integrate CALIBRATION-GUIDE.md writing and summary linking into successful generation workflow in src/pink_noise/app.py
+- [X] T040 [US2] Add guide review checklist artifact for the one lightweight novice walkthrough in specs/001-generate-pink-noise/checklists/guide-usability.md
 
 **Checkpoint**: User Story 2 is independently verifiable through generated guide
 content and guide-linked consumer outputs.
@@ -147,17 +147,17 @@ speaker-band calibration.
 
 ### Tests for User Story 3
 
-- [ ] T041 [P] [US3] Add profile compatibility tests for LFE, subwoofer, bass-managed main-channel routing, and speaker-band mismatch rejection in tests/unit/domain/test_profiles.py
-- [ ] T042 [P] [US3] Add subwoofer app tests for direct LFE generation and bass-managed non-LFE low-frequency tracks in tests/unit/test_app.py
-- [ ] T043 [P] [US3] Add report and guide tests for direct LFE labels, bass-managed warnings, longer averaging guidance, and sweep/integration caveats in tests/unit/output/test_reports.py
-- [ ] T044 [US3] Add integration tests for subwoofer-lfe-check and subwoofer-bass-managed quickstart scenarios in tests/integration/test_generate_reference_set.py
+- [X] T041 [P] [US3] Add profile compatibility tests for LFE, subwoofer, bass-managed main-channel routing, and speaker-band mismatch rejection in tests/unit/domain/test_profiles.py
+- [X] T042 [P] [US3] Add subwoofer app tests for direct LFE generation and bass-managed non-LFE low-frequency tracks in tests/unit/test_app.py
+- [X] T043 [P] [US3] Add report and guide tests for direct LFE labels, bass-managed warnings, longer averaging guidance, and sweep/integration caveats in tests/unit/output/test_reports.py
+- [X] T044 [US3] Add integration tests for subwoofer-lfe-check and subwoofer-bass-managed quickstart scenarios in tests/integration/test_generate_reference_set.py
 
 ### Implementation for User Story 3
 
-- [ ] T045 [US3] Implement subwoofer direct LFE and bass-managed target-channel expansion rules in src/pink_noise/app.py
-- [ ] T046 [US3] Implement subwoofer profile warnings, mismatch errors, and low-frequency measurement guidance in src/pink_noise/domain/profiles.py
-- [ ] T047 [US3] Extend report and guide output with direct LFE labels, bass-managed routing semantics, low-frequency averaging warning, and sub integration caveats in src/pink_noise/output/reports.py
-- [ ] T048 [US3] Extend beginner guide subwoofer sections for individual sub checks, summed sub-system level, bass management confirmation, and sweep-based integration caveats in src/pink_noise/output/guide.py
+- [X] T045 [US3] Implement subwoofer direct LFE and bass-managed target-channel expansion rules in src/pink_noise/app.py
+- [X] T046 [US3] Implement subwoofer profile warnings, mismatch errors, and low-frequency measurement guidance in src/pink_noise/domain/profiles.py
+- [X] T047 [US3] Extend report and guide output with direct LFE labels, bass-managed routing semantics, low-frequency averaging warning, and sub integration caveats in src/pink_noise/output/reports.py
+- [X] T048 [US3] Extend beginner guide subwoofer sections for individual sub checks, summed sub-system level, bass management confirmation, and sweep-based integration caveats in src/pink_noise/output/guide.py
 
 **Checkpoint**: User Story 3 is independently functional for subwoofer calibration
 material and rejects unsafe/mismatched speaker-band usage.
@@ -177,16 +177,16 @@ files.
 
 ### Tests for User Story 4
 
-- [ ] T049 [P] [US4] Add analysis and pro profile tests for full-band limits, -20 dBFS pro RMS, labeling, and consumer-default separation in tests/unit/domain/test_profiles.py
-- [ ] T050 [P] [US4] Add periodic generation app tests for whole-period duration enforcement, analyzer metadata, and seeded repeatability in tests/unit/test_app.py
-- [ ] T051 [P] [US4] Add report tests for analysis/RTA warnings, pro reference warnings, and periodic noise metadata in tests/unit/output/test_reports.py
-- [ ] T052 [US4] Add integration test for full-band-analysis periodic quickstart scenario and pro-reference generation in tests/integration/test_generate_reference_set.py
+- [X] T049 [P] [US4] Add analysis and pro profile tests for full-band limits, -20 dBFS pro RMS, labeling, and consumer-default separation in tests/unit/domain/test_profiles.py
+- [X] T050 [P] [US4] Add periodic generation app tests for whole-period duration enforcement, analyzer metadata, and seeded repeatability in tests/unit/test_app.py
+- [X] T051 [P] [US4] Add report tests for analysis/RTA warnings, pro reference warnings, and periodic noise metadata in tests/unit/output/test_reports.py
+- [X] T052 [US4] Add integration test for full-band-analysis periodic quickstart scenario and pro-reference generation in tests/integration/test_generate_reference_set.py
 
 ### Implementation for User Story 4
 
-- [ ] T053 [US4] Implement full-band-analysis and pro-reference workflow handling in src/pink_noise/app.py
-- [ ] T054 [US4] Extend profile definitions for full-band analysis and pro reference labeling, RMS defaults, warnings, and allowed noise modes in src/pink_noise/domain/profiles.py
-- [ ] T055 [US4] Extend reports with analysis/RTA labels, pro/studio reference labels, RMS reference separation, and periodic-mode metadata in src/pink_noise/output/reports.py
+- [X] T053 [US4] Implement full-band-analysis and pro-reference workflow handling in src/pink_noise/app.py
+- [X] T054 [US4] Extend profile definitions for full-band analysis and pro reference labeling, RMS defaults, warnings, and allowed noise modes in src/pink_noise/domain/profiles.py
+- [X] T055 [US4] Extend reports with analysis/RTA labels, pro/studio reference labels, RMS reference separation, and periodic-mode metadata in src/pink_noise/output/reports.py
 
 **Checkpoint**: User Story 4 is independently functional for advanced analysis and
 pro reference workflows.
@@ -198,13 +198,13 @@ pro reference workflows.
 **Purpose**: Complete documentation, validation, and quality gates across all user
 stories.
 
-- [ ] T056 [P] Add quickstart validation notes for WAVE_FORMAT_EXTENSIBLE channel masks, custom-layout schema validation, and periodic duration behavior in specs/001-generate-pink-noise/quickstart.md
-- [ ] T057 [P] Add package README with install, CLI examples, safe playback warning, and generated artifact overview in README.md
-- [ ] T058 Run formatter and lint-equivalent checks for Python and Markdown files documented in pyproject.toml
-- [ ] T059 Run full pytest suite and fix failures across tests/contract, tests/unit, and tests/integration
-- [ ] T060 Run quickstart scenarios manually or through integration fixtures and record results in specs/001-generate-pink-noise/checklists/requirements.md
-- [ ] T061 Verify generated filenames stay under 120 characters and include profile, layout, channel, band, RMS, and mode in tests/unit/test_app.py
-- [ ] T062 Verify no generated WAV, FLAC, MP3, out/, outputs/, or generated/ artifacts are tracked by git using .gitignore
+- [X] T056 [P] Add quickstart validation notes for WAVE_FORMAT_EXTENSIBLE channel masks, custom-layout schema validation, and periodic duration behavior in specs/001-generate-pink-noise/quickstart.md
+- [X] T057 [P] Add package README with install, CLI examples, safe playback warning, and generated artifact overview in README.md
+- [X] T058 Run formatter and lint-equivalent checks for Python and Markdown files documented in pyproject.toml
+- [X] T059 Run full pytest suite and fix failures across tests/contract, tests/unit, and tests/integration
+- [X] T060 Run quickstart scenarios manually or through integration fixtures and record results in specs/001-generate-pink-noise/checklists/requirements.md
+- [X] T061 Verify generated filenames stay under 120 characters and include profile, layout, channel, band, RMS, and mode in tests/unit/test_app.py
+- [X] T062 Verify no generated WAV, FLAC, MP3, out/, outputs/, or generated/ artifacts are tracked by git using .gitignore
 
 ---
 

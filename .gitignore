@@ -28,6 +28,7 @@ generated/
 *.wav
 *.flac
 *.mp3
+*.log
 
 # Local environment and tool state
 .env

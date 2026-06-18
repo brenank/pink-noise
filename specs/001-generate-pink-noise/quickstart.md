@@ -136,3 +136,22 @@ Open the generated validation JSON and confirm each track includes:
 - Artifact paths for the summary, validation JSON, and `CALIBRATION-GUIDE.md`.
 
 The JSON structure must match [validation-data.schema.json](./contracts/validation-data.schema.json).
+
+## 9. Inspect WAV Metadata And Custom Layout Contracts
+
+Expected outcomes:
+
+- Surround WAV files use WAVE_FORMAT_EXTENSIBLE metadata with a 24-bit PCM subtype.
+- Built-in layouts record the expected channel mask, such as `0x60F` for 5.1.
+- Custom layouts validate against [custom-layout.schema.json](./contracts/custom-layout.schema.json).
+- Custom layouts with `channel_mask_policy: directout` keep ordered channels and
+  record a zero channel mask.
+
+## 10. Confirm Periodic Duration Behavior
+
+Run a periodic request with a non-multiple-of-4 duration.
+
+Expected outcome:
+
+- The command exits non-zero.
+- The error explains that periodic noise duration must be a multiple of 4 seconds.

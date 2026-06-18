@@ -81,5 +81,11 @@ Custom layout files provide:
 - Ordered channel list.
 - Channel role for each channel.
 - Optional channel aliases.
+- `kind: "pink-noise.custom-layout"` and `schema_version: "1.0"`.
+- `channel_mask_policy`, either `speaker_positions` for known WAVE speaker bits
+  or `directout` for custom/direct channel order with a zero channel mask.
 
 Custom layout validation follows the rules in [data-model.md](../data-model.md).
+
+Periodic pink noise is generated in seamless 4-second periods. Requests using
+`--noise-mode periodic` must use a duration that is an exact multiple of 4 seconds.

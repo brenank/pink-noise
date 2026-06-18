@@ -34,6 +34,9 @@ Represents a built-in or custom channel map.
 - `id`: Stable layout identifier.
 - `display_name`: Human-readable name.
 - `channels`: Ordered list of `SpeakerChannel` entries.
+- `channel_mask`: WAVE speaker-position bit mask. Built-ins use explicit masks;
+  custom direct-output layouts use `0`.
+- `channel_mask_policy`: `speaker_positions` or `directout`.
 - `is_builtin`: Boolean.
 - `source`: `built_in` or `custom`.
 
@@ -43,6 +46,10 @@ Represents a built-in or custom channel map.
 - Custom layouts require at least one channel.
 - Channel names must be non-empty and unique within a layout.
 - Channel order must be explicit.
+- Built-in WAVE channel order follows the WAVE speaker-position bit order used by
+  WAVE_FORMAT_EXTENSIBLE.
+- `channel_mask_policy: speaker_positions` requires a channel-mask bit for each
+  channel. `directout` records channel order without speaker-position metadata.
 
 ## SpeakerChannel
 
@@ -72,6 +79,7 @@ Defines signal requirements for a generated track.
 - `bit_depth`: 24 by default.
 - `noise_mode`: `random` or `periodic`.
 - `seed`: Deterministic repeatability value.
+- `periodic_period_seconds`: 4 seconds for periodic mode, absent/null for random.
 - `slope_target_db_per_octave`: -3 dB per octave target.
 - `rms_tolerance_db`: +/-0.1 dB.
 - `slope_tolerance_db_per_octave`: +/-0.5 dB per octave.
@@ -82,6 +90,7 @@ Defines signal requirements for a generated track.
 - RMS must be within tolerance.
 - Pink-noise slope must be within tolerance.
 - Inactive channels must remain below the silence threshold.
+- Periodic noise duration must be a whole multiple of the 4-second period.
 
 ## GenerationRequest
 
@@ -123,6 +132,9 @@ Represents one generated WAV file.
 - Exactly one active target channel for channel-isolated tracks.
 - All inactive channels contain digital silence below -120 dBFS.
 - File name identifies profile, layout, channel, RMS level, and bandwidth.
+- File names follow
+  `{profile}__{layout}__ch{index}-{channel}__{band}hz__{rms}dbfs__{mode}.wav`
+  and stay under 120 characters.
 
 ## GenerationSummary
 
@@ -148,6 +160,8 @@ Machine-readable audit record.
 - `schema_version`: Contract version.
 - `request`: Full request data.
 - `tracks`: Per-track measurements and validation outcomes.
+- `routing_intent`, `channel_mask`, WAV format metadata, validation thresholds,
+  and noise-mode details are included for auditability.
 - `overall_status`: `pass` or `fail`.
 - `errors`: Validation or generation failures.
 
