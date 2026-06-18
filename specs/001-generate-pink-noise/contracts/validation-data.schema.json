@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pink-noise.local/contracts/validation-data.schema.json",
+  "title": "Pink Noise Validation Data",
+  "type": "object",
+  "required": ["schema_version", "request", "tracks", "overall_status", "artifacts"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "request": {
+      "type": "object",
+      "required": ["profile_id", "layout_id", "duration_seconds", "sample_rate_hz", "bit_depth"],
+      "properties": {
+        "profile_id": { "type": "string" },
+        "layout_id": { "type": "string" },
+        "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "sample_rate_hz": { "type": "integer", "const": 48000 },
+        "bit_depth": { "type": "integer", "const": 24 },
+        "noise_mode": { "type": "string", "enum": ["random", "periodic"] },
+        "seed": { "type": ["string", "integer", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "tracks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "target_channel_id",
+          "active_channel_index",
+          "rms_dbfs",
+          "peak_dbfs",
+          "crest_factor_db",
+          "band_hz",
+          "pink_slope_db_per_octave",
+          "silent_channel_max_dbfs",
+          "status"
+        ],
+        "properties": {
+          "path": { "type": "string" },
+          "target_channel_id": { "type": "string" },
+          "active_channel_index": { "type": "integer", "minimum": 0 },
+          "silent_channel_indices": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 0 }
+          },
+          "rms_dbfs": { "type": "number" },
+          "peak_dbfs": { "type": "number", "maximum": 0 },
+          "crest_factor_db": { "type": "number" },
+          "band_hz": {
+            "type": "array",
+            "prefixItems": [
+              { "type": "number", "exclusiveMinimum": 0 },
+              { "type": "number", "exclusiveMinimum": 0 }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "pink_slope_db_per_octave": { "type": "number" },
+          "silent_channel_max_dbfs": { "type": "number" },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "failures": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": ["pass", "fail"]
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["summary_path", "validation_data_path", "calibration_guide_path"],
+      "properties": {
+        "summary_path": { "type": "string" },
+        "validation_data_path": { "type": "string" },
+        "calibration_guide_path": {
+          "type": "string",
+          "pattern": "(^|/)CALIBRATION-GUIDE\\.md$"
+        }
+      },
+      "additionalProperties": true
+    },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}
